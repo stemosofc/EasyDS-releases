@@ -1,0 +1,28 @@
+name: Upload automático para Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write  
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar o repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Upload de arquivo para a release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" \
+            ./EasyDS_Installer.exe \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
